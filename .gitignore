@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Firebase
+.firebase
+firebase-debug.log
+firestore-debug.log
+
 # Environment variables (Vite). Keep `.env.example` committed.
 .env
 .env.*

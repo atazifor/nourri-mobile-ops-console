@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
+import { Toaster } from 'sonner';
 import { AuthProvider } from '@/context/AuthContext';
 import { AppLayout } from '@/layouts/AppLayout';
 import { AuditLogsPage } from '@/pages/AuditLogsPage';
@@ -16,6 +17,12 @@ export function AppRouter() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <Toaster
+          position="top-right"
+          richColors
+          closeButton
+          toastOptions={{ duration: 5000 }}
+        />
         <Routes>
           <Route path={ROUTES.login} element={<LoginPage />} />
 

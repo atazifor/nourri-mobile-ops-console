@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router';
+import { FullPageLoader } from '@/components/Loader';
 import { useAuth } from '@/hooks/useAuth';
 import { AccessDeniedPage } from '@/pages/AccessDeniedPage';
 import { ROUTES } from './paths';
@@ -42,20 +43,4 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   return <>{children}</>;
-}
-
-function FullPageLoader() {
-  return (
-    <div
-      role="status"
-      aria-live="polite"
-      className="flex min-h-screen items-center justify-center bg-canvas"
-    >
-      <span
-        aria-hidden="true"
-        className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-brand-600"
-      />
-      <span className="sr-only">Loading…</span>
-    </div>
-  );
 }

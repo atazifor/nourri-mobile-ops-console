@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pencil, RotateCw } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/Button';
 import { Card, CardBody, CardHeader } from '@/components/Card';
 import { EmptyState } from '@/components/EmptyState';
@@ -354,10 +355,14 @@ function EditStatusModal({ user, onClose, onSaved }: EditStatusModalProps) {
         },
       });
       onSaved({ ...user, status: nextStatus });
+      toast.success(
+        `${user.name || user.email} is now ${STATUS_LABELS[nextStatus]}`,
+      );
       onClose();
     } catch (err) {
       console.error('Failed to update mobile user status:', err);
       setError('Could not save changes. Try again.');
+      toast.error('Could not save status change.');
       setSaving(false);
     }
   };
