@@ -1,6 +1,6 @@
+import { X } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { Logo } from '@/components/Logo';
-import { CloseIcon } from '@/components/icons';
 import { cn } from '@/utils/cn';
 import { NAV_SECTIONS } from './nav-config';
 
@@ -39,7 +39,7 @@ export function Sidebar({ mobileOpen, onCloseMobile }: SidebarProps) {
             className="inline-flex h-8 w-8 items-center justify-center rounded-md text-ink-500 hover:bg-canvas-muted hover:text-ink-900 lg:hidden"
             aria-label="Close navigation"
           >
-            <CloseIcon width={18} height={18} />
+            <X size={18} />
           </button>
         </div>
 
@@ -71,8 +71,7 @@ export function Sidebar({ mobileOpen, onCloseMobile }: SidebarProps) {
                         {({ isActive }) => (
                           <>
                             <Icon
-                              width={18}
-                              height={18}
+                              size={18}
                               className={cn(
                                 'flex-shrink-0',
                                 isActive

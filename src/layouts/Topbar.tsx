@@ -1,10 +1,4 @@
-import {
-  ChevronDownIcon,
-  LogoutIcon,
-  MenuIcon,
-  NotificationsIcon,
-  SearchIcon,
-} from '@/components/icons';
+import { Bell, ChevronDown, LogOut, Menu, Search } from 'lucide-react';
 
 interface TopbarProps {
   onOpenMobileNav: () => void;
@@ -19,13 +13,12 @@ export function Topbar({ onOpenMobileNav }: TopbarProps) {
         className="inline-flex h-9 w-9 items-center justify-center rounded-md text-ink-500 hover:bg-canvas-muted hover:text-ink-900 lg:hidden"
         aria-label="Open navigation"
       >
-        <MenuIcon />
+        <Menu size={20} />
       </button>
 
       <div className="relative hidden flex-1 max-w-md sm:block">
-        <SearchIcon
-          width={16}
-          height={16}
+        <Search
+          size={16}
           className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-400"
         />
         <input
@@ -41,7 +34,7 @@ export function Topbar({ onOpenMobileNav }: TopbarProps) {
           className="relative inline-flex h-9 w-9 items-center justify-center rounded-md text-ink-500 hover:bg-canvas-muted hover:text-ink-900"
           aria-label="Notifications"
         >
-          <NotificationsIcon width={18} height={18} />
+          <Bell size={18} />
           <span className="absolute right-2 top-2 inline-flex h-1.5 w-1.5 rounded-full bg-brand-500" />
         </button>
 
@@ -60,11 +53,7 @@ export function Topbar({ onOpenMobileNav }: TopbarProps) {
             </span>
             <span className="text-[11px] text-ink-400">Admin</span>
           </span>
-          <ChevronDownIcon
-            width={14}
-            height={14}
-            className="hidden text-ink-400 sm:block"
-          />
+          <ChevronDown size={14} className="hidden text-ink-400 sm:block" />
         </button>
 
         <button
@@ -73,7 +62,7 @@ export function Topbar({ onOpenMobileNav }: TopbarProps) {
           aria-label="Sign out"
           title="Sign out"
         >
-          <LogoutIcon width={18} height={18} />
+          <LogOut size={18} />
         </button>
       </div>
     </header>

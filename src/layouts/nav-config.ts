@@ -1,11 +1,11 @@
 import {
-  AuditLogsIcon,
-  DashboardIcon,
-  DevicesIcon,
-  NotificationsIcon,
-  SupportIcon,
-  UsersIcon,
-} from '@/components/icons';
+  Bell,
+  LayoutDashboard,
+  LifeBuoy,
+  ScrollText,
+  Smartphone,
+  Users,
+} from 'lucide-react';
 import { ROUTES } from '@/routes/paths';
 import type { NavSection } from '@/types';
 
@@ -16,7 +16,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Dashboard',
         to: ROUTES.dashboard,
-        icon: DashboardIcon,
+        icon: LayoutDashboard,
         description: 'Operational health & KPIs',
       },
     ],
@@ -27,25 +27,25 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Mobile Users',
         to: ROUTES.users,
-        icon: UsersIcon,
+        icon: Users,
         description: 'Customer accounts & profiles',
       },
       {
         label: 'Devices',
         to: ROUTES.devices,
-        icon: DevicesIcon,
+        icon: Smartphone,
         description: 'Registered handsets',
       },
       {
         label: 'Support Issues',
         to: ROUTES.support,
-        icon: SupportIcon,
+        icon: LifeBuoy,
         description: 'Triage & resolution queue',
       },
       {
         label: 'Notifications',
         to: ROUTES.notifications,
-        icon: NotificationsIcon,
+        icon: Bell,
         description: 'Outbound push events',
       },
     ],
@@ -56,7 +56,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Audit Logs',
         to: ROUTES.auditLogs,
-        icon: AuditLogsIcon,
+        icon: ScrollText,
         description: 'Admin activity history',
         requiredRole: 'ADMIN',
       },
