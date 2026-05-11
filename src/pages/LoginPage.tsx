@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Logo } from '@/components/Logo';
 import { ROUTES } from '@/routes/paths';
 
