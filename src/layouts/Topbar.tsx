@@ -1,10 +1,20 @@
-import { Bell, ChevronDown, LogOut, Menu, Search } from 'lucide-react';
+import { Bell, LogOut, Menu, Search } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 interface TopbarProps {
   onOpenMobileNav: () => void;
 }
 
 export function Topbar({ onOpenMobileNav }: TopbarProps) {
+  const { user, signOut } = useAuth();
+
+  const email = user?.email ?? '';
+  const initial = (email[0] ?? '?').toUpperCase();
+
+  const handleSignOut = () => {
+    void signOut();
+  };
+
   return (
     <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-border bg-surface/95 px-4 backdrop-blur sm:px-6">
       <button
@@ -40,24 +50,24 @@ export function Topbar({ onOpenMobileNav }: TopbarProps) {
 
         <div className="mx-1 hidden h-6 w-px bg-border sm:block" />
 
-        <button
-          type="button"
-          className="flex items-center gap-2 rounded-md px-1.5 py-1 text-left hover:bg-canvas-muted"
-        >
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-ink-900 text-xs font-semibold text-white">
-            AT
+        <div className="flex items-center gap-2 px-1.5 py-1">
+          <span
+            aria-hidden="true"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-ink-900 text-xs font-semibold text-white"
+          >
+            {initial}
           </span>
-          <span className="hidden flex-col leading-tight sm:flex">
-            <span className="text-[13px] font-medium text-ink-900">
-              Amin Tazifor
-            </span>
-            <span className="text-[11px] text-ink-400">Admin</span>
+          <span
+            className="hidden max-w-[200px] truncate text-[13px] font-medium text-ink-900 sm:block"
+            title={email}
+          >
+            {email}
           </span>
-          <ChevronDown size={14} className="hidden text-ink-400 sm:block" />
-        </button>
+        </div>
 
         <button
           type="button"
+          onClick={handleSignOut}
           className="inline-flex h-9 w-9 items-center justify-center rounded-md text-ink-500 hover:bg-canvas-muted hover:text-ink-900"
           aria-label="Sign out"
           title="Sign out"

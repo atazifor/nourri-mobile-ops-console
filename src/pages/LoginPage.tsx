@@ -1,14 +1,33 @@
-import type { FormEvent } from 'react';
-import { useNavigate } from 'react-router';
+import { useState, type FormEvent } from 'react';
+import { Navigate, useNavigate } from 'react-router';
 import { Logo } from '@/components/Logo';
+import { useAuth } from '@/hooks/useAuth';
 import { ROUTES } from '@/routes/paths';
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const { user, initializing, signIn } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  if (!initializing && user) {
+    return <Navigate to={ROUTES.dashboard} replace />;
+  }
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    navigate(ROUTES.dashboard, { replace: true });
+    if (submitting) return;
+    setError(null);
+    setSubmitting(true);
+    try {
+      await signIn(email.trim(), password);
+      navigate(ROUTES.dashboard, { replace: true });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Sign-in failed.');
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -26,7 +45,7 @@ export function LoginPage() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
             <label className="flex flex-col gap-1.5">
               <span className="text-xs font-medium text-ink-700">
                 Work email
@@ -34,9 +53,12 @@ export function LoginPage() {
               <input
                 type="email"
                 autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@nourri.com"
-                className="h-10 rounded-md border border-border bg-surface px-3 text-sm text-ink-900 placeholder:text-ink-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-100"
+                disabled={submitting}
                 required
+                className="h-10 rounded-md border border-border bg-surface px-3 text-sm text-ink-900 placeholder:text-ink-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-100 disabled:cursor-not-allowed disabled:bg-canvas-muted"
               />
             </label>
 
@@ -47,17 +69,36 @@ export function LoginPage() {
               <input
                 type="password"
                 autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="h-10 rounded-md border border-border bg-surface px-3 text-sm text-ink-900 placeholder:text-ink-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-100"
+                disabled={submitting}
                 required
+                className="h-10 rounded-md border border-border bg-surface px-3 text-sm text-ink-900 placeholder:text-ink-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-100 disabled:cursor-not-allowed disabled:bg-canvas-muted"
               />
             </label>
 
+            {error && (
+              <div
+                role="alert"
+                className="rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700"
+              >
+                {error}
+              </div>
+            )}
+
             <button
               type="submit"
-              className="mt-2 inline-flex h-10 items-center justify-center rounded-md bg-brand-600 px-4 text-sm font-medium text-white shadow-sm hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-200"
+              disabled={submitting}
+              className="mt-2 inline-flex h-10 items-center justify-center gap-2 rounded-md bg-brand-600 px-4 text-sm font-medium text-white shadow-sm hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-200 disabled:cursor-not-allowed disabled:opacity-70"
             >
-              Continue
+              {submitting && (
+                <span
+                  aria-hidden="true"
+                  className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white"
+                />
+              )}
+              {submitting ? 'Signing in…' : 'Continue'}
             </button>
           </form>
 

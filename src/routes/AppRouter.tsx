@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
+import { AuthProvider } from '@/context/AuthContext';
 import { AppLayout } from '@/layouts/AppLayout';
 import { AuditLogsPage } from '@/pages/AuditLogsPage';
 import { DashboardPage } from '@/pages/DashboardPage';
@@ -14,34 +15,35 @@ import { ROUTES } from './paths';
 export function AppRouter() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path={ROUTES.login} element={<LoginPage />} />
+      <AuthProvider>
+        <Routes>
+          <Route path={ROUTES.login} element={<LoginPage />} />
 
-        <Route
-          element={
-            <ProtectedRoute>
-              <AppLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route path={ROUTES.dashboard} element={<DashboardPage />} />
-          <Route path={ROUTES.users} element={<UsersPage />} />
-          <Route path={ROUTES.devices} element={<DevicesPage />} />
-          <Route path={ROUTES.support} element={<SupportPage />} />
-          <Route path={ROUTES.notifications} element={<NotificationsPage />} />
           <Route
-            path={ROUTES.auditLogs}
             element={
-              <ProtectedRoute requiredRole="ADMIN">
-                <AuditLogsPage />
+              <ProtectedRoute>
+                <AppLayout />
               </ProtectedRoute>
             }
-          />
-        </Route>
+          >
+            <Route path={ROUTES.dashboard} element={<DashboardPage />} />
+            <Route path={ROUTES.users} element={<UsersPage />} />
+            <Route path={ROUTES.devices} element={<DevicesPage />} />
+            <Route path={ROUTES.support} element={<SupportPage />} />
+            <Route
+              path={ROUTES.notifications}
+              element={<NotificationsPage />}
+            />
+            <Route path={ROUTES.auditLogs} element={<AuditLogsPage />} />
+          </Route>
 
-        <Route path="/" element={<Navigate to={ROUTES.dashboard} replace />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+          <Route
+            path="/"
+            element={<Navigate to={ROUTES.dashboard} replace />}
+          />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
