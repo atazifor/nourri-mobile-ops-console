@@ -5,10 +5,10 @@ import { AuditLogsPage } from '@/pages/AuditLogsPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { DevicesPage } from '@/pages/DevicesPage';
 import { LoginPage } from '@/pages/LoginPage';
+import { MobileUsersPage } from '@/pages/MobileUsersPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { NotificationsPage } from '@/pages/NotificationsPage';
 import { SupportPage } from '@/pages/SupportPage';
-import { UsersPage } from '@/pages/UsersPage';
 import { ProtectedRoute } from './ProtectedRoute';
 import { ROUTES } from './paths';
 
@@ -27,7 +27,7 @@ export function AppRouter() {
             }
           >
             <Route path={ROUTES.dashboard} element={<DashboardPage />} />
-            <Route path={ROUTES.users} element={<UsersPage />} />
+            <Route path={ROUTES.users} element={<MobileUsersPage />} />
             <Route path={ROUTES.devices} element={<DevicesPage />} />
             <Route path={ROUTES.support} element={<SupportPage />} />
             <Route
