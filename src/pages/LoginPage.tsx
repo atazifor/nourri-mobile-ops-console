@@ -118,19 +118,40 @@ export function LoginPage() {
               'radial-gradient(ellipse at 30% 20%, rgba(225,29,72,0.35), transparent 55%), radial-gradient(ellipse at 80% 80%, rgba(190,18,60,0.25), transparent 60%), linear-gradient(180deg, #0f172a 0%, #111827 100%)',
           }}
         />
-        <div className="relative flex h-full flex-col justify-between p-12 text-white">
+        <div className="relative flex h-full flex-col p-12 text-white">
           <div className="text-[11px] font-semibold uppercase tracking-widest text-white/60">
             Nourri Mobile Ops Console
           </div>
-          <div>
-            <p className="max-w-md text-2xl font-medium leading-snug">
+          <div className="my-auto max-w-md">
+            <p className="text-2xl font-medium leading-snug">
               Visibility into every device, support thread, and notification
               moving through the Nourri Express mobile platform.
             </p>
-            <p className="mt-6 text-sm text-white/60">
-              Role-aware, audit-logged, and built for the operations team.
-            </p>
+            <ul className="mt-8 space-y-2.5 text-sm text-white/70">
+              <li className="flex items-start gap-2.5">
+                <span
+                  aria-hidden="true"
+                  className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-brand-400"
+                />
+                Firebase Auth with role-based access
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span
+                  aria-hidden="true"
+                  className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-brand-400"
+                />
+                Firestore-backed operational data
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span
+                  aria-hidden="true"
+                  className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-brand-400"
+                />
+                Audit-logged admin actions
+              </li>
+            </ul>
           </div>
+          <div className="text-xs text-white/40">Yaoundé · Cameroon</div>
         </div>
       </div>
     </div>
