@@ -12,23 +12,37 @@ import {
   type User,
 } from 'firebase/auth';
 import { auth } from '@/firebase/auth';
+import { getAdminUser } from '@/services/adminUsers';
+import type { AdminUser } from '@/types';
 
-// Authentication answers *who* the user is — the only concern of this Context.
-// Authorization (*what* they're allowed to do) is a separate problem layered
-// on top, driven by role/claim data sourced elsewhere (e.g. `adminUsers` in
-// Firestore). Roles are intentionally not modeled here yet; this Context only
-// exposes the signed-in Firebase user and the actions needed to flip that
-// state.
+// Authentication and authorization are kept as two distinct concepts even
+// though both now live in this Context:
 //
-// React Context is used because auth state is consumed in many unrelated
-// places — route guards, the topbar, future role-gated UI — and prop-drilling
-// it through every layer would couple unrelated components. A single Context,
-// sourced from Firebase's `onAuthStateChanged` subscription, keeps that state
-// centralized, reactive, and accessible via a single hook.
+//   • Authentication — *who is the user?* — answered by Firebase Auth. The
+//     `user` field below is the proof of identity (signed JWT, persisted
+//     session). A user can be authenticated and still have zero capabilities
+//     in this app.
+//
+//   • Authorization — *what may the user do?* — answered by the
+//     `adminUsers/{uid}` Firestore document, mapped here into `profile`.
+//     Without a matching document the user has no role in this portal and
+//     ProtectedRoute will surface AccessDeniedPage instead of the app shell,
+//     regardless of how valid their Firebase credentials are. Capability
+//     checks (ADMIN vs VIEWER) live in `src/utils/roles.ts` so any component
+//     can ask the same question the same way.
+//
+// React Context centralizes both pieces because they're consumed all over the
+// tree — route guards, the topbar, future role-gated UI — and prop-drilling
+// would force every intermediate component to know about auth.
 
 export interface AuthContextValue {
   user: User | null;
-  /** True until Firebase resolves the persisted session on initial page load. */
+  profile: AdminUser | null;
+  /**
+   * True while either the persisted Firebase session or the matching
+   * adminUsers/{uid} document is still loading. Consumers must not treat
+   * `user` or `profile` as final until this flips to false.
+   */
   initializing: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -42,12 +56,26 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<AdminUser | null>(null);
   const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (nextUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (nextUser) => {
+      setInitializing(true);
       setUser(nextUser);
-      setInitializing(false);
+      if (!nextUser) {
+        setProfile(null);
+        setInitializing(false);
+        return;
+      }
+      try {
+        setProfile(await getAdminUser(nextUser.uid));
+      } catch (err) {
+        console.error('Failed to load adminUsers profile:', err);
+        setProfile(null);
+      } finally {
+        setInitializing(false);
+      }
     });
     return unsubscribe;
   }, []);
@@ -55,6 +83,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
+      profile,
       initializing,
       signIn: async (email, password) => {
         try {
@@ -65,7 +94,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       },
       signOut: () => firebaseSignOut(auth),
     }),
-    [user, initializing],
+    [user, profile, initializing],
   );
 
   return (

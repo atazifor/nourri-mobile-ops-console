@@ -1,15 +1,18 @@
 import { Bell, LogOut, Menu, Search } from 'lucide-react';
+import { StatusBadge } from '@/components/StatusBadge';
 import { useAuth } from '@/hooks/useAuth';
+import { isAdmin } from '@/utils/roles';
 
 interface TopbarProps {
   onOpenMobileNav: () => void;
 }
 
 export function Topbar({ onOpenMobileNav }: TopbarProps) {
-  const { user, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
 
   const email = user?.email ?? '';
   const initial = (email[0] ?? '?').toUpperCase();
+  const role = profile?.role;
 
   const handleSignOut = () => {
     void signOut();
@@ -57,12 +60,21 @@ export function Topbar({ onOpenMobileNav }: TopbarProps) {
           >
             {initial}
           </span>
-          <span
-            className="hidden max-w-[200px] truncate text-[13px] font-medium text-ink-900 sm:block"
-            title={email}
-          >
-            {email}
-          </span>
+          <div className="hidden flex-col items-start leading-tight sm:flex">
+            <span
+              className="max-w-[200px] truncate text-[13px] font-medium text-ink-900"
+              title={email}
+            >
+              {email}
+            </span>
+            {role && (
+              <span className="mt-0.5">
+                <StatusBadge tone={isAdmin(role) ? 'brand' : 'info'}>
+                  {role}
+                </StatusBadge>
+              </span>
+            )}
+          </div>
         </div>
 
         <button

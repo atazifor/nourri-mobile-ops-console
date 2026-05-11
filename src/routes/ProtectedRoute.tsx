@@ -1,31 +1,30 @@
 import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router';
 import { useAuth } from '@/hooks/useAuth';
+import { AccessDeniedPage } from '@/pages/AccessDeniedPage';
 import { ROUTES } from './paths';
 
 interface ProtectedRouteProps {
   children: ReactNode;
 }
 
-// ProtectedRoute is a route-level authentication gate. It sits between the
-// router and the page element and does three things, in order:
+// ProtectedRoute applies two gates in sequence:
 //
-//   1. While Firebase Auth is still resolving the persisted session
-//      (`initializing`), it renders a minimal full-page loader. Without this,
-//      a signed-in user landing on a protected URL would briefly be redirected
-//      to /login during the auth handshake.
+//   1. Authentication — while Firebase Auth (and the matching adminUsers
+//      profile) are loading, render a minimal full-page loader. Without this,
+//      a signed-in user landing on a protected URL would briefly bounce to
+//      /login during the auth handshake. If no signed-in user once
+//      initialization completes, redirect to /login and stash the requested
+//      path in `location.state.from` so a future "redirect back after
+//      sign-in" flow can pick it up.
 //
-//   2. If there's no signed-in user once initialization completes, it
-//      redirects to /login and stashes the requested path in
-//      `location.state.from` so a future "redirect back after sign-in" flow
-//      can pick it up.
-//
-//   3. Otherwise it renders the children — the actual page tree.
-//
-// Authorization (role checks) would also be layered here once roles are wired
-// up; for now this is strictly an authentication gate.
+//   2. Authorization — a Firebase user without a corresponding
+//      adminUsers/{uid} document has no role in this portal and is shown
+//      AccessDeniedPage in place of the requested route. Granular role
+//      checks (ADMIN vs VIEWER on specific routes) belong here too as
+//      they're introduced.
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user, initializing } = useAuth();
+  const { user, profile, initializing } = useAuth();
   const location = useLocation();
 
   if (initializing) {
@@ -36,6 +35,10 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     return (
       <Navigate to={ROUTES.login} replace state={{ from: location.pathname }} />
     );
+  }
+
+  if (!profile) {
+    return <AccessDeniedPage />;
   }
 
   return <>{children}</>;
